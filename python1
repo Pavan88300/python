@@ -1,0 +1,712 @@
+MSc CS 3rd Sem Machine Learning Practical’s
+
+    1. Write a python program to Prepare im Plot (Use Forge Dataset / Iris Dataset)
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+iris = pd.read_csv("Iris.csv")
+print(iris.head(20))
+
+plt.plot(iris.id, iris["sepal_length"], "r--")
+plt.show()
+
+iris.plot(kind="scatter", x="sepal_length", y="petal_length")
+plt.show()
+
+Output:
+Iris.csv
+    id  sepal_length  sepal_width  petal_length  petal_width  species
+
+0    1           5.1          3.5           1.4          0.2  Iris-setosa
+1    2           4.9          3.0           1.4          0.2  Iris-setosa
+2    3           4.7          3.2           1.3          0.2  Iris-setosa
+3    4           4.6          3.1           1.5          0.2  Iris-setosa
+4    5           5.0          3.6           1.4          0.2  Iris-setosa
+5    6           5.4          3.9           1.7          0.4  Iris-setosa
+6    7           4.6          3.4           1.4          0.3  Iris-setosa
+7    8           5.0          3.4           1.5          0.2  Iris-setosa
+8    9           4.4          2.9           1.4          0.2  Iris-setosa
+9   10           4.9          3.1           1.5          0.1  Iris-setosa
+10  11           5.4          3.7           1.5          0.2  Iris-setosa
+11  12           4.8          3.4           1.6          0.2  Iris-setosa
+12  13           4.8          3.0           1.4          0.1  Iris-setosa
+13  14           4.3          3.0           1.1          0.1  Iris-setosa
+14  15           5.8          4.0           1.2          0.2  Iris-setosa
+15  16           5.7          4.4           1.5          0.4  Iris-setosa
+16  17           5.4          3.9           1.3          0.4  Iris-setosa
+17  18           5.1          3.5           1.4          0.3  Iris-setosa
+18  19           5.7          3.8           1.7          0.3  Iris-setosa
+19  20           5.1          3.8           1.5          0.3  Iris-setosa
+
+
+
+
+
+    2. Write a python program to find all null values in a given data set and remove them.
+
+
+import pandas as pd
+import numpy as np
+
+dt = {'first':[100, 90, np.nan, 43],
+      'second':[30, 45, 60, np.nan],
+      'third':[np.nan, 40, 80, 98],
+     }
+
+df = pd.DataFrame(dt)
+print(df)
+
+
+First score
+Second score
+Third score
+0
+100.0
+30.0
+NaN
+1
+90.0
+45.0
+40.0
+2
+NaN
+56.0
+80.0
+3
+95.0
+NaN
+98.0
+
+
+df.isnull()
+
+
+
+
+
+df.notnull()
+
+First score
+Second score
+Third score
+0
+True
+True
+False
+1
+True
+True
+True
+2
+False
+True
+True
+3
+True
+False
+True
+
+#df=pd.DataFrame(dict)
+df.fillna(0)
+
+First score
+Second score
+Third score
+0
+100.0
+30.0
+0.0
+1
+90.0
+45.0
+40.0
+2
+0.0
+56.0
+80.0
+3
+95.0
+0.0
+98.0
+
+df.fillna(method='pad')
+
+First score
+Second score
+Third score
+0
+100.0
+30.0
+NaN
+1
+90.0
+45.0
+40.0
+2
+90.0
+56.0
+80.0
+3
+95.0
+56.0
+98.0
+
+df.fillna(method='bfill')
+
+First score
+Second score
+Third score
+0
+100.0
+30.0
+40.0
+1
+95.0
+45.0
+40.0
+2
+95.0
+56.0
+80.0
+3
+95.0
+NaN
+98.0
+
+df.replace(to_replace = np.nan,value= -99)
+
+First score
+Second score
+Third score
+0
+100.0
+30.0
+-99.0
+1
+95.0
+45.0
+40.0
+2
+-99.0
+56.0
+80.0
+3
+95.0
+-99.0
+98.0
+
+df.dropna()
+
+First score
+Second score
+Third score
+1
+90.0
+45.0
+40.0
+
+df.dropna(axis=1)
+0
+1
+2
+3
+
+
+new_data=df.dropna(axis=0)
+new_data
+
+
+First score
+Second score
+Third score
+1
+90.0
+45.0
+40.0
+
+
+    3. Write a python program the Categorical values in numeric format for a given dataset.
+
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder
+
+df = pd.read_csv("playtennis.csv")
+print(df)
+
+LE = LabelEncoder()
+label = LE.fit_transform(df['Play Tennis'])
+print(label)
+
+df.drop("Play Tennis", axis=1, inplace=True)
+
+Output:
+  Outlook Temperature Humidity    Wind Play Tennis
+0      Sunny         Hot     High    Weak          No
+1      Sunny         Hot     High  Strong          No
+2   Overcast         Hot     High    Weak         Yes
+3       Rain        Mild     High   WeakY          es
+4       Rain        Cool   Normal    Weak         Yes
+5       Rain        Cool   Normal  Strong          No
+6   Overcast        Cool   Normal  Strong         Yes
+7      Sunny        Mild     High    Weak          No
+8      Sunny        Cool   Normal    Weak         Yes
+9       Rain        Mild   Normal    Weak         Yes
+10     Sunny        Mild   Normal  Strong         Yes
+11  Overcast        Mild     High  Strong         Yes
+12  Overcast         Hot   Normal    Weak         Yes
+13      Rain        Mild     High  Strong          No
+[0 0 1 2 1 0 1 0 1 1 1 1 1 0]
+
+
+
+    4. Write a python program to implement Simple Linear Regression for predicting house price.
+
+
+import matplotlib.pyplot as plt
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+
+data = pd.read_csv(r'kc_house_data.csv')
+print(data.head())
+
+f = ['price', 'bedrooms', 'bathrooms', 'sqft_living',
+     'floors', 'condition', 'sqft_above', 'sqft_basement',
+     'yr_built', 'yr_renovated']
+
+data = data[f]
+print(data.shape)
+data = data.dropna()
+print(data.shape)
+
+data.describe()
+
+X = data[f[1:]]
+y = data['price']
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+print(X_train.shape)
+print(X_test.shape)
+
+print(y_test.shape)
+print(y_train.shape)
+
+LR = LinearRegression()
+LR.fit(X_train, y_train)
+print(LR.coef_)
+
+y_test_predict = LR.predict(X_test)
+print(y_test_predict.shape)
+
+g = plt.plot((y_test - y_test_predict), marker='o', linestyle='')
+plt.show()
+
+
+
+
+
+    5. Write a python program to implement Multiple Linear Regression for a given dataset.
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score
+
+var = pd.read_csv("Housing_Data.csv")
+
+x = var[['price']]
+y = var[['lotsize']]
+
+reg = LinearRegression().fit(x, y)
+y_pred = reg.predict(x)
+print(y_pred)
+
+score = r2_score(y, y_pred)
+print(score)
+
+plt.plot(x, y_pred)
+plt.show()
+
+
+
+    6. Write a python program to implement Polynomial Regression for given dataset.
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.linear_model import LinearRegression
+
+dt = pd.read_csv("Position_Salaries.csv")
+x = dt.iloc[:,1 :-1].values
+y = dt.iloc[:, -1].values
+print(dt.head(5))
+
+pr = PolynomialFeatures(degree=4)
+x_poly = pr.fit_transform(x)
+lr = LinearRegression()
+
+lr.fit(x_poly, y)
+LinearRegression()
+y_pred = lr.predict(x_poly)
+
+df = pd.DataFrame({'Real Values': y, 'Predicted Values': y_pred})
+print(df)
+
+x_grid = np.arange(min(x), max(x), 0.1)
+x_grid = x_grid.reshape((len(x_grid), 1))
+
+plt.scatter(x, y, color='Blue')
+plt.scatter(x, y, color='Red')
+plt.plot(x_grid, lr.predict(pr.fit_transform(x_grid)), color='Black')
+
+plt.title('Polynomial Regression')
+plt.xlabel('Position Level')
+plt.ylabel('Salary')
+plt.show()
+
+
+
+    7. A. Write a python program to implement Logistic Regression for Iris dataset
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+from sklearn import datasets
+from sklearn.linear_model import LogisticRegression
+
+iris = datasets.load_iris()
+
+print(list(iris.keys()))
+print(iris["data"])
+print(iris["target"])
+print(iris["DESCR"])
+print(iris["data"].shape)
+
+x = iris['data'][:,3:]
+print(x)
+
+# y = iris['target'] == 2
+# print(y)
+
+y = (iris['target'] == 2).astype(np.int_)
+print(y)
+
+clf = LogisticRegression()
+clf.fit(x, y)
+
+ex = clf.predict(([x[1:6]]))
+print(ex)
+
+ex = clf.predict(([x[2:6]]))
+print(ex)
+
+x_new = np.linspace(0, 3, 1000).reshape(-1, 1)
+print(x_new)
+
+y_prob = clf.predict_proba(x_new)
+print(x_new)
+
+plt.plot(x_new, y_prob[:, 1], ',-', label='Probability')
+plt.show()
+
+
+B. Write a python program to Implement Naïve Bayes.
+
+import numpy as np
+from sklearn.naive_bayes import GaussianNB
+
+x_train = np.array([[1, 2], [3, 4], [5, 6], [7, 8]])
+y_train = np.array([1, 1, 2, 2])
+x_test = np.array([[9, 10], [11, 12], [13, 14], [15, 16]])
+classifier = GaussianNB()
+classifier.fit(x_train, y_train)
+y_pred = classifier.predict(x_test)
+print(y_pred)
+print("Accuracy:", classifier.score(x_test, y_pred))
+
+Output:
+[2 2 2 2]
+Accuracy: 1.0
+
+    8. Write a python program to Implement Decision Tree whether or not to play tennis.
+
+import matplotlib.pyplot as plt
+import pandas as pd
+from sklearn import tree
+from sklearn.preprocessing import LabelEncoder
+
+playTennis = pd.read_csv('playtennis.csv')
+
+Le = LabelEncoder()
+
+playTennis['Outlook'] = Le.fit_transform(playTennis['Outlook'])
+playTennis['Temperature'] = Le.fit_transform(playTennis['Temperature'])
+playTennis['Humidity'] = Le.fit_transform(playTennis['Humidity'])
+playTennis['Wind'] = Le.fit_transform(playTennis['Wind'])
+playTennis['Play Tennis'] = Le.fit_transform(playTennis['Play Tennis'])
+print(playTennis)
+
+y = playTennis['Play Tennis']
+x = playTennis.drop(['Play Tennis'], axis=1)
+
+clf = tree.DecisionTreeClassifier(criterion='entropy')
+clf = clf.fit(x, y)
+
+tree.plot_tree(clf, filled=True)
+
+plt.show()
+
+
+
+    9. Write a python program to Implement Random Forest for iris Dataset.
+
+import pandas as pd
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, classification_report
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load the Iris dataset
+iris = load_iris()
+X = iris.data
+y = iris.target
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Create and train the Random Forest classifier
+clf = RandomForestClassifier(n_estimators=100, random_state=42)
+clf.fit(X_train, y_train)
+
+# Make predictions
+y_pred = clf.predict(X_test)
+
+# Evaluate the classifier
+accuracy = accuracy_score(y_test, y_pred)
+print(f'Accuracy: {accuracy:.2f}')
+print('Classification Report:')
+print(classification_report(y_test, y_pred, target_names=iris.target_names))
+
+# Feature importance
+feature_importances = clf.feature_importances_
+features = iris.feature_names
+importance_df = pd.DataFrame({'Feature': features, 'Importance': feature_importances}).sort_values(by='Importance', ascending=False)
+print(importance_df)
+
+# Plotting feature importances
+plt.figure(figsize=(10, 6))
+sns.barplot(x='Importance', y='Feature', data=importance_df)
+plt.title('Feature Importances')
+plt.show()
+
+
+Output:
+Accuracy: 1.00
+Classification Report:
+              precision    recall   f1-score   support
+
+      setosa       1.00      1.00      1.00        10
+  versicolor       1.00      1.00      1.00         9
+   virginica       1.00      1.00      1.00        11
+
+    accuracy                           1.00        30
+   macro avg       1.00      1.00      1.00        30
+weighted avg       1.00      1.00      1.00        30
+
+             Feature  Importance
+2  petal length (cm)    0.439994
+3   petal width (cm)    0.421522
+0  sepal length (cm)    0.108098
+1   sepal width (cm)    0.030387
+
+
+
+
+    10.  Write a python program to implement linear SVM. 
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+from sklearn import svm
+
+x = np.array([[1, 2], [5, 8], [8, 8], [1, 0.6]])
+y = [1, 0, 1, 0]
+
+clf = svm.SVC(kernel='linear', C=1.0).fit(x, y)
+print(clf.predict([[0.56, 0.76]]))
+
+w = clf.coef_[0]
+print(w)
+
+a = -w[0]/w[1]
+xx = np.linspace(0,12)
+yy = a*xx-clf.intercept_[0]/w[1]
+
+plt.plot(xx, yy, 'k-', label="Non Weighted Division")
+plt.scatter(x[:, 0], x[:, 1], c=y)
+plt.legend()
+plt.show()
+
+
+
+    11. Write a python program to find Decision boundary by using a neural network with 10 hidden units on two moons dataset.
+
+import numpy as np
+from sklearn.datasets import make_moons
+from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
+
+np.random.seed(0)
+X, Y = make_moons(500, noise=0.1)
+X_train, X_test, Y_train, Y_test = train_test_split(
+    X, Y, test_size=0.25, random_state=73)
+
+plt.figure(figsize=(12,8))
+plt.scatter(X_train[:,0], X_train[:,1], c=Y_train,
+            cmap=plt.cm.cividis, s=50)
+plt.xlabel('X1')
+plt.ylabel('X2')
+
+plt.title('Random Training Data')
+plt.show()
+
+
+
+#### Below Prog Not Done or Executed
+    12. Write a python program to implement k-nearest Neighbors ML algorithm to build prediction model (Use Forge Dataset) 
+# importing required libraries
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+# importing or loading the dataset
+dataset = pd.read_csv('wine.csv')
+
+# distributing the dataset into two components X and Y
+X = dataset.iloc[:, 0:13].values
+y = dataset.iloc[:, 13].values
+
+# Splitting the X and Y into the
+# Training set and Testing set
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
+
+# performing preprocessing part
+from sklearn.preprocessing import StandardScaler
+sc = StandardScaler()
+X_train = sc.fit_transform(X_train)
+X_test = sc.transform(X_test)
+
+# Applying PCA function on training
+# and testing set of X component
+from sklearn.decomposition import PCA
+pca = PCA (n_components = 2)
+X_train = pca.fit_transform(X_train)
+X_test = pca.transform(X_test)
+explained_variance = pca.explained_variance_ratio_
+
+# Fitting Logistic Regression To the training set
+from sklearn.linear_model import LogisticRegression
+classifier = LogisticRegression(random_state = 0)
+classifier.fit(X_train, y_train)
+
+# Predicting the test set result using
+# predict function under LogisticRegression
+y_pred = classifier.predict(X_test)
+
+# making confusion matrix between
+# test set of Y and predicted value.
+from sklearn.metrics import confusion_matrix
+cm = confusion_matrix(y_test, y_pred)
+
+# Predicting the training set
+# result through scatter plot
+from matplotlib.colors import ListedColormap
+
+X_set, y_set = X_train, y_train
+X1, X2 = np.meshgrid(np.arange(start = X_set[:, 0].min() - 1,
+                    stop = X_set[:, 0].max() + 1, step = 0.01),
+                    np.arange(start = X_set[:, 1].min() - 1,
+                    stop = X_set[:, 1].max() + 1, step = 0.01))
+
+plt.contourf(X1, X2, classifier.predict(np.array([X1.ravel(), X2.ravel()]).T).reshape(X1.shape), alpha = 0.75, cmap = ListedColormap(('yellow', 'white', 'aquamarine')))
+
+plt.xlim(X1.min(), X1.max())
+plt.ylim(X2.min(), X2.max())
+for i, j in enumerate(np.unique(y_set)):
+    plt.scatter(X_set[y_set == j, 0], X_set[y_set == j, 1], c = ListedColormap(('red', 'green', 'blue'))(i), label = j)
+plt.title('Logistic Regression (Training set)')
+plt.xlabel('PC1') 	  # for Xlabel
+plt.ylabel('PC2')		  # for Ylabel
+plt.legend()		  # to show legend
+plt.show()		  #show scatter plot
+
+
+
+# Visualising the Test set results through scatter plot
+from matplotlib.colors import ListedColormap
+
+X_set, y_set = X_test, y_test
+
+X1, X2 = np.meshgrid(np.arange(start = X_set[: , 0].min() - 1,
+                    stop = X_set[: , 0].max() + 1, step = 0.01),
+                    np.arange(start = X_set[: , 1].min() - 1,
+                    stop = X_set[: , 1].max() + 1, step = 0.01))
+
+plt.contourf(X1, X2, classifier.predict(np.array([X1.ravel(), X2.ravel()]).T).reshape(X1.shape), alpha = 0.75, cmap = ListedColormap(('yellow', 'white', 'aquamarine')))
+
+plt.xlim(X1.min(), X1.max())
+plt.ylim(X2.min(), X2.max())
+
+for i, j in enumerate(np.unique(y_set)):
+    plt.scatter(X_set[y_set == j, 0], X_set[y_set == j, 1],
+                c = ListedColormap(('red', 'green', 'blue'))(i), label = j)
+
+# title for scatter plot
+plt.title('Logistic Regression (Test set)')
+plt.xlabel('PC1') # for Xlabel
+plt.ylabel('PC2') # for Ylabel
+plt.legend()
+
+# show scatter plot
+plt.show()
+
+
+
+    13. Write a python program to implement Agglomerative Clustering on a synthetic dataset.
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import scipy.cluster.hierarchy as shc
+
+from sklearn.decomposition import PCA
+from sklearn.cluster import AgglomerativeClustering
+from sklearn.preprocessing import StandardScaler, normalize
+from sklearn.metrics import silhouette_score
+
+x = pd.read_csv('CC GENERAL.csv')
+x = x.drop("CUST_ID", axis = 1)
+x.fillna(method = "ffill", inplace = True)
+
+scaler = StandardScaler()
+x_scaled = scaler.fit_transform(x)
+x_norm = normalize(x_scaled)
+x_norm = pd.DataFrame(x_norm)
+
+pca = PCA (n_components = 2)
+x_principal = pca.fit_transform(x_norm)
+x_principal = pd.DataFrame(x_principal)
+x_principal.columns = ["P1", "P2"]
+
+plt.figure(figsize = (6, 8))
+plt.title("Visualizing the Data")
+Dendrogram = shc.dendrogram((shc.linkage(x_principal, method = "ward")))
+plt.show()
